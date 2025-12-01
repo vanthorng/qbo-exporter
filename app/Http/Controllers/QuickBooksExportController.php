@@ -13,9 +13,9 @@ class QuickBooksExportController extends Controller
     ) {}
 
     /**
-     * Export invoices as streamed CSV (handles large datasets).
+     * Export Vendors as streamed CSV (handles large datasets).
      */
-    public function exportInvoices(): StreamedResponse
+    public function exportVendors(): StreamedResponse
     {
         if (!QuickBooksToken::exists()) {
             return redirect()
@@ -23,23 +23,24 @@ class QuickBooksExportController extends Controller
                 ->with('error', 'Please connect QuickBooks first.');
         }
 
-        $fileName = 'qbo_invoices_' . now()->format('Ymd_His') . '.csv';
+        $fileName = 'qbo_vendors_' . now()->format('Ymd_His') . '.csv';
 
         return response()->streamDownload(function () {
             $dataService = $this->quickBooksService->getDataService();
 
             $handle = fopen('php://output', 'w');
 
-            // CSV header
+            // CSV header for Vendor data
             fputcsv($handle, [
-                'InvoiceID',
-                'DocNumber',
-                'CustomerName',
-                'TxnDate',
-                'DueDate',
-                'TotalAmt',
-                'Balance',
-                'Currency',
+                'VendorID',
+                'VendorName',
+                'Email',
+                'Phone',
+                'Address',
+                'City',
+                'State',
+                'PostalCode',
+                'Country',
             ]);
 
             $startPosition = 1;
@@ -47,38 +48,38 @@ class QuickBooksExportController extends Controller
 
             do {
                 $query = sprintf(
-                    "SELECT * FROM Invoice STARTPOSITION %d MAXRESULTS %d",
+                    "SELECT * FROM Vendor STARTPOSITION %d MAXRESULTS %d",
                     $startPosition,
                     $pageSize
                 );
 
-                $entities = $dataService->Query($query);
-                $error    = $dataService->getLastError();
+                $vendors = $dataService->Query($query);
+                $error   = $dataService->getLastError();
 
                 if ($error) {
                     // log error and stop
-                    // logger()->error('QBO query error: '.$error->getResponseBody());
                     break;
                 }
 
-                if (empty($entities)) {
+                if (empty($vendors)) {
                     break;
                 }
 
-                foreach ($entities as $inv) {
+                foreach ($vendors as $vendor) {
                     fputcsv($handle, [
-                        $inv->Id ?? '',
-                        $inv->DocNumber ?? '',
-                        $inv->CustomerRef?->name ?? '',
-                        $inv->TxnDate ?? '',
-                        $inv->DueDate ?? '',
-                        $inv->TotalAmt ?? '',
-                        $inv->Balance ?? '',
-                        $inv->CurrencyRef?->value ?? '',
+                        $vendor->Id ?? '',
+                        $vendor->DisplayName ?? '',
+                        $vendor->PrimaryEmailAddr?->Address ?? '',
+                        $vendor->PrimaryPhone?->FreeFormNumber ?? '',
+                        $vendor->BillAddr?->Line1 ?? '',
+                        $vendor->BillAddr?->City ?? '',
+                        $vendor->BillAddr?->CountrySubDivisionCode ?? '',
+                        $vendor->BillAddr?->PostalCode ?? '',
+                        $vendor->BillAddr?->Country ?? '',
                     ]);
                 }
 
-                $count          = count($entities);
+                $count          = count($vendors);
                 $startPosition += $count;
 
                 // push data to the browser for huge exports

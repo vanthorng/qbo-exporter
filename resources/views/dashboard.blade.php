@@ -41,8 +41,8 @@
     <p>
         <strong>Step 2:</strong> After connected, export invoices from QuickBooks Online.
     </p>
-    <a href="{{ route('qbo.export.invoices') }}" class="btn btn-primary">
-        Export Invoices (CSV)
+    <a href="{{ route('qbo.export.vendors') }}" class="btn btn-primary">
+        Export Vendors (CSV)
     </a>
 
     <p style="margin-top: 20px; color: #555;">

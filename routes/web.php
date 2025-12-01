@@ -19,5 +19,5 @@ Route::get('/quickbooks/callback', [QuickBooksAuthController::class, 'callback']
     ->name('qbo.callback');
 
 // Export
-Route::get('/quickbooks/export/invoices', [QuickBooksExportController::class, 'exportInvoices'])
-    ->name('qbo.export.invoices');
+Route::get('/quickbooks/export/vendors', [QuickBooksExportController::class, 'exportVendors'])
+    ->name('qbo.export.vendors');
