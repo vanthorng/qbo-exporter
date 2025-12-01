@@ -41,9 +41,36 @@
     <p>
         <strong>Step 2:</strong> After connected, export invoices from QuickBooks Online.
     </p>
-    <a href="{{ route('qbo.export.vendors') }}" class="btn btn-primary">
-        Export Vendors (CSV)
-    </a>
+<h2>Exports</h2>
+
+<p><strong>Invoices</strong></p>
+<a href="{{ route('qbo.export.invoices') }}" class="btn btn-primary">
+    Export Invoices (CSV)
+</a>
+
+<p><strong>Vendors</strong></p>
+<a href="{{ route('qbo.export.vendors.csv') }}" class="btn btn-primary">
+    Vendors CSV (big data)
+</a>
+<a href="{{ route('qbo.export.vendors.excel') }}" class="btn btn-secondary">
+    Vendors Excel
+</a>
+
+<p><strong>Customers</strong></p>
+<a href="{{ route('qbo.export.customers.csv') }}" class="btn btn-primary">
+    Customers CSV (big data)
+</a>
+<a href="{{ route('qbo.export.customers.excel') }}" class="btn btn-secondary">
+    Customers Excel
+</a>
+
+<p><strong>Items</strong></p>
+<a href="{{ route('qbo.export.items.csv') }}" class="btn btn-primary">
+    Items CSV (big data)
+</a>
+<a href="{{ route('qbo.export.items.excel') }}" class="btn btn-secondary">
+    Items Excel
+</a>
 
     <p style="margin-top: 20px; color: #555;">
         The export is streamed in chunks, so it can handle very large datasets
